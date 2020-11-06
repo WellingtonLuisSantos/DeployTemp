@@ -1,0 +1,190 @@
+﻿@model CORE.BackOffice.UI.ViewModels.Funcionario.FuncionarioFilterViewModel
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Administração - Gestão";
+}
+
+<style>
+    .ui-datepicker {
+        z-index: 999999999 !important;
+    }
+</style>
+
+<script src="~/Scripts/pnotify.js"></script>
+
+<div class="panel-body">
+    <div id="divViewSearch" class="admin-form theme-info tab-pane">
+        <div class="panel">
+            <div class="panel-heading">
+                <span class="panel-title fa fa-search">
+                    Cliente Pessoa Jurídica
+                </span>
+            </div>
+            <div class="panel-body  admin-form theme-info tab-pane">
+                @using (Html.BeginForm())
+                {
+
+                    <div class="form-group">
+                        <div class="col-lg-12 col-md-12 col-sm-12 filtro-agenda">
+                            @Html.LabelFor(model => model.NAME, new { @Class = "control-label col-sm-1 col-md-1" })
+                            <div class="col-sm-6 col-md-6">
+                                @Html.TextBoxFor(model => model.NAME, new { @class = "form-control" })
+                            </div>
+
+                            @Html.LabelFor(model => model.DOCUMENT, new { @Class = "control-label col-sm-1 col-md-1" })
+                            <div class="col-sm-3 col-md-3">
+                                @Html.TextBoxFor(model => model.DOCUMENT, new { @class = "form-control" })
+                            </div>
+                        </div>
+                    </div>
+
+
+                    @*<div class="form-group">
+
+                        <div class="col-sm-6 col-md-6">
+
+                            <div class="section-divider mv10">
+                                <span>Pessoa</span>
+                            </div>
+
+                            <div class="option-group field section">
+
+                                <div class="col-sm-3 col-md-3">
+                                    <label class="option block mt10" for="DOCUMENT_ALL">
+                                        <input name="DOCUMENT_TYPE" id="DOCUMENT_ALL" type="radio" @(Model.DOCUMENT_TYPE == null ? "checked=''" : "") value="null">
+                                        <span class="radio"></span>Todos
+                                    </label>
+                                </div>
+
+                                <div class="col-sm-3 col-md-3">
+                                    <label class="option block mt10" for="DOCUMENT_CPF">
+                                        <input name="DOCUMENT_TYPE" id="DOCUMENT_CPF" type="radio" @(Model.DOCUMENT_TYPE != null && Model.DOCUMENT_TYPE == true ? "checked=''" : "") value="true">
+                                        <span class="radio"></span>Fisíca
+                                    </label>
+                                </div>
+
+                                <div class="col-sm-3 col-md-3">
+                                    <label class="option block mt10" for="DOCUMENT_CNPJ">
+                                        <input name="DOCUMENT_TYPE" id="DOCUMENT_CNPJ" type="radio" @(Model.DOCUMENT_TYPE != null && Model.DOCUMENT_TYPE == false ? "checked=''" : "") value="false">
+                                        <span class="radio"></span>Jurídica
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>*@
+
+
+                    <div class="form-group">
+
+                        <div class="col-sm-6 col-md-6">
+
+                            <div class="section-divider mv10">
+                                <span>Status</span>
+                            </div>
+
+                            <div class="option-group field section">
+
+                                <div class="col-sm-3 col-md-3">
+                                    <label class="option block mt10" for="STATUS_USER_ALL">
+                                        <input name="FL_ACTIVE" id="STATUS_USER_ALL" type="radio" @(Model.FL_ACTIVE == null ? "checked=''" : "") value="null">
+                                        <span class="radio"></span>Todos
+                                    </label>
+                                </div>
+
+                                <div class="col-sm-3 col-md-3">
+                                    <label class="option block mt10" for="STATUS_USER_ACTIVE">
+                                        <input name="FL_ACTIVE" id="STATUS_USER_ACTIVE" type="radio" @(Model.FL_ACTIVE != null && Model.FL_ACTIVE == true ? "checked=''" : "") value="true">
+                                        <span class="radio"></span>Ativo
+                                    </label>
+                                </div>
+
+                                <div class="col-sm-3 col-md-3">
+                                    <label class="option block mt10" for="STATUS_USER_INACTIVE">
+                                        <input name="FL_ACTIVE" id="STATUS_USER_INACTIVE" type="radio" @(Model.FL_ACTIVE != null && Model.FL_ACTIVE == false ? "checked=''" : "") value="false">
+                                        <span class="radio"></span>Inativo
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    @Html.Partial("~/Views/Shared/_ButtonsSearchCreate.cshtml")
+
+                }
+
+                @*Resultado da pesquisa*@
+                <div class="form-group">
+                    <div class="col-sm-12 col-md-12">
+                        <div id="divList">
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div id="divViewCreate" class="admin-form theme-info tab-pane" style="display:none">
+
+
+    </div>
+
+    <div id="divViewEdit" class="admin-form theme-info tab-pane" style="display:none">
+
+
+    </div>
+</div>
+
+
+
+<div class="modal fade" tabindex='-1' data-backdrop="static" data-keyboard="true" id="myModal" role="dialog">
+    <div class="modal-dialog" style="width: 800px!important;">
+        <div class="modal-content">
+        </div>
+    </div>
+</div>
+
+
+
+<script>
+
+    $(document).ready(function () {
+
+        $('#btnSubmit').click(function () {
+            Submit();
+        });
+
+        $('#btnCreate').click(function () {
+            ShowViewCreate();
+        });
+
+    });
+
+    function Submit() {
+
+        var dataObject = JSON.stringify({
+            'NAME': $("#@Html.IdFor(model => model.NAME)").val(),
+            'DOCUMENT': $("#@Html.IdFor(model => model.DOCUMENT)").val(),
+            'DOCUMENT_TYPE': $("input:radio[name=@Html.IdFor(model => model.DOCUMENT_TYPE)]:checked").val(),
+            'FL_ACTIVE': $("input:radio[name=@Html.IdFor(model => model.FL_ACTIVE)]:checked").val()
+        });
+
+        $.ajax({
+            url: '@Url.Action("Index")',
+            type: 'POST',
+            contentType: 'application/json',
+            data: dataObject,
+            success: function (data) {
+                $('#divList').html(data);
+            },
+            error: function (data) {
+                alert("Error Submit");
+            }
+        });
+
+    }
+
+</script>
+

@@ -1,0 +1,30 @@
+﻿@model List<CORE.BackOffice.UI.ViewModels.Profile.ProfileViewModel>
+
+    @{
+        Layout = "~/Views/Shared/_LayoutExport.cshtml";
+        ViewBag.Title = "ExportToExcel";
+    }
+    
+    <table class="table">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.First().ID_PROFILE)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.First().NAME_PROFILE)
+            </th>
+        </tr>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ID_PROFILE)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.NAME_PROFILE)
+                </td>
+            </tr>
+        }
+
+    </table>

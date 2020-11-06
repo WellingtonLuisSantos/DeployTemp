@@ -1,0 +1,193 @@
+﻿@model CORE.BackOffice.UI.ViewModels.User.UserViewModel
+
+@{
+    Layout = null;
+    ViewBag.Title = "Administração - Usuário";
+}
+
+<style>
+    .field-validation-error {
+        color: red !Important;
+    }
+</style>
+
+<script src="~/Scripts/jquery.validate.js"></script>
+<script src="~/Scripts/jquery.validate.unobtrusive.js"></script>
+
+<div class="panel">
+    <div class="panel-heading">
+        <span class="panel-title fa fa-user">
+            Alterar Usuário
+        </span>
+    </div>
+
+
+
+    @using (Ajax.BeginForm("Edit", "User", new AjaxOptions { OnBegin = "StartProgress", HttpMethod = "POST", OnSuccess = "TrataRetorno", OnFailure = "TrataRetorno" }))
+    {
+        @Html.HiddenFor(model => model.ID_USER)
+
+        <div class="panel-body admin-form theme-info tab-pane">
+            <div class="section row">
+                <div class="col-lg-12 col-md-12 col-ssm-12">
+                    @Html.ValidationSummary(true, string.Empty, new { @class = "alert alert-danger", Id = "errosDefinirMedico", @style = "display: none;" })
+                    <div class="alert alert-danger" style="display: none" id="errorMessage">
+                    </div>
+                    <div>
+                        <p class="alert alert-success" style="display: none" id="okMessage"></p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-horizontal">
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.NAME_USER, new { @Class = "control-label col-sm-1 col-md-1" })
+                    <div class="col-sm-5 col-md-5">
+                        @Html.TextBoxFor(model => model.NAME_USER, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.NAME_USER)
+                    </div>
+
+                    @Html.LabelFor(model => model.PHONE, new { @Class = "control-label col-sm-1 col-md-1" })
+                    <div class="col-sm-5 col-md-5">
+                        @Html.TextBoxFor(model => model.PHONE, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.PHONE, string.Empty, new { @class = "state-error" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+
+
+                    @Html.LabelFor(model => model.BIRTHDAY, new { @Class = "control-label col-sm-1 col-md-1" })
+                    <div class="col-sm-5 col-md-5">
+                        @Html.TextBoxFor(model => model.BIRTHDAY, new { @class = "form-control dateField" })
+                        @Html.ValidationMessageFor(model => model.BIRTHDAY, string.Empty, new { @class = "state-error" })
+                    </div>
+
+                    @Html.LabelFor(model => model.DOCUMENT, new { @Class = "control-label col-sm-1 col-md-1" })
+                    <div class="col-sm-5 col-md-5">
+                        @Html.TextBoxFor(model => model.DOCUMENT, new { @class = "form-control cpfField" })
+                        @Html.ValidationMessageFor(model => model.DOCUMENT)
+                    </div>
+
+                </div>
+
+                <div class="form-group">
+
+                    @Html.LabelFor(model => model.EMAIL, new { @Class = "control-label col-sm-1 col-md-1" })
+                    <div class="col-sm-5 col-md-5">
+                        @Html.TextBoxFor(model => model.EMAIL, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.EMAIL, string.Empty, new { @class = "state-error" })
+                    </div>
+
+                    @Html.LabelFor(model => model.PROFILE, new { @Class = "control-label col-sm-1 col-md-1" })
+                    <div class="col-sm-5 col-md-5">
+                        @Html.DropDownListFor(model => model.ID_PROFILE, Model.PROFILE, new { id = "ddlProfile", @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.ID_PROFILE, string.Empty, new { @class = "state-error" })
+                    </div>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    @Html.LabelFor(model => model.LOGIN_USER, new { @Class = "control-label col-sm-1 col-md-1" })
+                    <div class="col-sm-5 col-md-5">
+                        @Html.TextBoxFor(model => model.LOGIN_USER, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.LOGIN_USER, string.Empty, new { @class = "state-error" })
+                    </div>
+
+                    @*@Html.LabelFor(model => model.PASSWORD_USER, new { @Class = "control-label col-sm-1 col-md-1" })
+                        <div class="col-sm-5 col-md-5">
+                            @Html.PasswordFor(model => model.PASSWORD_USER, new { @class = "form-control" })
+                        </div>
+                        @Html.ValidationMessageFor(model => model.PASSWORD_USER, string.Empty, new { @class = "state-error" })*@
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <div class="col-sm-6 col-md-6">
+
+                        <div class="section-divider mv10">
+                            <span>Sexo</span>
+                        </div>
+
+                        <div class="option-group field section">
+                            <label class="option block mt10" for="GENDER_FEMALE">
+                                <input name="GENDER" id="GENDER_FEMALE" type="radio" @(Model.GENDER.Equals("F") ? "checked=''" : "") value="F">
+                                <span class="radio"></span>Feminino
+                            </label>
+                            <label class="option block mt10" for="GENDER_MALE">
+                                <input name="GENDER" id="GENDER_MALE" type="radio" @(!Model.GENDER.Equals("F") ? "checked=''" : "") value="M">
+                                <span class="radio"></span>Masculino
+                            </label>
+                        </div>
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <div class="col-sm-6 col-md-6">
+
+                            <div class="section-divider mv10">
+                                <span>Status</span>
+                            </div>
+
+                            <div class="option-group field section">
+                                <label class="option block mt10" for="USER_ACTIVE">
+                                    <input name="FL_ACTIVE" id="USER_ACTIVE" type="radio" @(Model.FL_ACTIVE == true ? "checked=''" : "") value="true">
+                                    <span class="radio"></span>Ativo
+                                </label>
+                                <label class="option block mt10" for="USER_INACTIVE">
+                                    <input name="FL_ACTIVE" id="USER_INACTIVE" type="radio" @(Model.FL_ACTIVE == false ? "checked=''" : "") value="false">
+                                    <span class="radio"></span>Inativo
+                                </label>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                @Html.Partial("~/Views/Shared/_ButtonsModal.cshtml")
+
+            </div>
+        </div>
+    }
+
+</div>
+
+
+@Scripts.Render("~/bundles/inputmask")
+@Scripts.Render("~/bundles/jqueryUI-datetimepicker")
+
+<script>
+
+    $(document).ready(function () {
+
+        $.datepicker.setDefaults($.datepicker.regional['pt-BR']);
+
+        $('.dateField').datepicker({
+            language: "pt-BR",
+            format: 'dd/mm/yyyy',
+            autoclose: true,
+            prevText: '<i class="fa fa-chevron-left"></i>',
+            nextText: '<i class="fa fa-chevron-right"></i>',
+            showButtonPanel: false
+        });
+
+
+        $(".hourField").inputmask("99:99", { "clearIncomplete": true });
+        $(".dateField").inputmask("99/99/9999", { "clearIncomplete": true });
+        $(".cpfField").inputmask("999.999.999-99", { "clearIncomplete": true });
+
+    });
+
+</script>
+
+@section Scripts {
+
+}

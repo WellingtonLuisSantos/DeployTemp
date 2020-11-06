@@ -1,0 +1,39 @@
+﻿@model CORE.BackOffice.UI.Controllers.SeededCategories
+
+    @if (Model.Categories.Where(s => s.ID_PARENT == Model.Seed).Any())
+    {
+        <ul Id="@Model.Categories.First().ID_MAP">
+            @foreach (var node in Model.Categories)
+            {
+                if (node.ID_PARENT == Model.Seed)
+                {
+                    CORE.BackOffice.UI.Controllers.SeededCategories inner = new CORE.BackOffice.UI.Controllers.SeededCategories { Seed = node.ID_MAP, Categories = Model.Categories };
+                    <li class="ui-state-default">
+                        <a href="?@node.ID_MAP" id="@node.ID_MAP" data-description="@node.DESCRIPTION" data-id_parent="@node.ID_PARENT" class="item-data ui-icon ui-icon-arrowthick-2-n-s">@node.DESCRIPTION</a>
+                        @Html.Partial("_TreeCategories", inner)
+                    </li>
+                }
+            }
+        </ul>
+
+        @*<script>
+        $(function () {
+            $("#" + @Model.Categories.First().ID_MAP).sortable();
+            $("#" + @Model.Categories.First().ID_MAP).disableSelection();
+        });
+        </script>*@
+    }
+   
+
+
+<script>
+
+    $('.item-data').click(function () {        
+        $('#ID_MAP_MODIFIED').val(this.id);
+        $('#ID_PARENT_MODIFIED').val($('#' + this.id).attr('data-id_parent'));
+        $('#DESCRIPTION_MODIFIED').val($('#' + this.id).attr('data-description'));
+        $('#ID_PARENT_CREATE').val(this.id);
+        Submit(this.id);
+    });
+
+</script>

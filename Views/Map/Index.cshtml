@@ -1,0 +1,175 @@
+﻿@*@{
+        ViewBag.Title = "Administração - Gestão de Agendamentos";
+    }*@
+
+@model CORE.BackOffice.UI.ViewModels.Map.MapViewModel
+
+<style>
+    .demo {
+        border: none !important;
+    }
+
+    .jstree-default.jstree-focused {
+        background: none !important;
+    }
+</style>
+
+<script type="text/javascript" class="">
+    $(function () {
+        // TO CREATE AN INSTANCE
+        // select the tree container using jQuery
+        $("#demo1")
+            // call `.jstree` with the options object
+            .jstree({
+                // the `plugins` array allows you to configure the active plugins on this instance
+                "plugins": ["themes", "html_data", "ui", "crrm", "hotkeys"],
+                // each plugin you have included can have its own config object
+                "core": { "initially_open": ["phtml_1"] }
+                // it makes sense to configure a plugin only if overriding the defaults
+            })
+            // EVENTS
+            // each instance triggers its own events - to process those listen on the container
+            // all events are in the `.jstree` namespace
+            // so listen for `function_name`.`jstree` - you can function names from the docs
+            .bind("loaded.jstree", function (event, data) {
+                // you get two params - event & data - check the core docs for a detailed description
+            });
+    });
+</script>
+@*<script type="text/javascript" src="~/tree/_lib/jquery.js"></script>*@
+<script type="text/javascript" src="~/tree/_lib/jquery.cookie.js"></script>
+<script type="text/javascript" src="~/tree/_lib/jquery.hotkeys.js"></script>
+<script type="text/javascript" src="~/tree/jquery.jstree.js"></script>
+<link type="text/css" rel="stylesheet" href="~/tree/_docs/syntax/!style.css" />
+<link type="text/css" rel="stylesheet" href="~/tree/_docs/!style.css" />
+<script type="text/javascript" src="~/tree/_docs/syntax/!script.js"></script>
+
+
+<div class="panel">
+    <div class="panel-heading">
+        <span class="panel-title fa fa-edit">
+            Mapa
+        </span>
+    </div>
+
+    <div class="panel-body admin-form theme-info tab-pane">
+        <div class="section row">
+            <div class="col-lg-12 col-md-12 col-ssm-12">
+                @Html.ValidationSummary(true, string.Empty, new { @class = "alert alert-danger", Id = "errosDefinirMedico", @style = "display: none;" })
+                <div class="alert alert-danger" style="display: none" id="errorMessage">
+                </div>
+                <div>
+                    <p class="alert alert-success" style="display: none" id="okMessage"></p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="form-horizontal">
+            <div class="form-group">
+                <div class="col-sm-4 col-md-4">
+                    <div class="row">
+                        @using (Ajax.BeginForm("Create", "Map", new AjaxOptions { OnBegin = "StartProgress", HttpMethod = "POST", OnSuccess = "TrataRetornoFinish", OnFailure = "TrataRetorno" }))
+                        {
+                            @Html.HiddenFor(model => model.ID_PARENT, new { @Id = "ID_PARENT_CREATE" })
+                            <div class="col-sm-12 col-md-12">
+                                @*@Html.LabelFor(model => model.DESCRIPTION, new { @Class = "control-label col-sm-2 col-md-2" })*@
+                                <div class="col-sm-7 col-md-8">
+                                    @Html.TextBoxFor(model => model.DESCRIPTION, new { @Id = "DESCRIPTION_CREATE", @class = "form-control" })
+                                    @Html.ValidationMessageFor(model => model.DESCRIPTION)
+                                </div>
+                                <input type="submit" value="Novo" class="col-sm-3 btn btn-info btn-right " />
+                            </div>
+                        }
+
+                        <div class="col-sm-12 col-md-12">
+                        </div>
+
+                        @using (Ajax.BeginForm("Edit", "Map", new AjaxOptions { OnBegin = "StartProgress", HttpMethod = "POST", OnSuccess = "TrataRetornoFinish", OnFailure = "TrataRetorno" }))
+                        {
+                            @Html.HiddenFor(model => model.ID_MAP, new { @Id = "ID_MAP_MODIFIED" })
+                            @Html.HiddenFor(model => model.ID_PARENT, new { @Id = "ID_PARENT_MODIFIED" })
+                            <div class="col-sm-12 col-md-12">
+                                @*@Html.LabelFor(model => model.DESCRIPTION, new { @Class = "control-label col-sm-2 col-md-2" })*@
+                                <div class="col-sm-8 col-md-8">
+                                    @Html.TextBoxFor(model => model.DESCRIPTION, new { @Id = "DESCRIPTION_MODIFIED", @class = "form-control" })
+                                    @Html.ValidationMessageFor(model => model.DESCRIPTION)
+                                </div>
+                                <input type="submit" value="Alterar" class="col-sm-3 btn btn-info btn-right" />
+                            </div>
+                        }
+                    </div>
+                    <div class="row">
+                        <div id="demo1" class="demo">
+                            @Html.Partial("_TreeCategories", Model.Map)
+                        </div>
+                    </div>
+                    </div>
+                <div class="col-sm-8 col-md-8">
+                    @*@using (Ajax.BeginForm("Create", "Map", new AjaxOptions { OnBegin = "StartProgress", HttpMethod = "POST", OnSuccess = "TrataRetornoFinish", OnFailure = "TrataRetorno" }))
+                    {
+                        @Html.HiddenFor(model => model.ID_PARENT, new { @Id = "ID_PARENT_CREATE" })
+                        <div class="col-sm-12 col-md-12">
+                            @Html.LabelFor(model => model.DESCRIPTION, new { @Class = "control-label col-sm-2 col-md-2" })
+                            <div class="col-sm-8 col-md-8">
+                                @Html.TextBoxFor(model => model.DESCRIPTION, new { @Id = "DESCRIPTION_CREATE", @class = "form-control" })
+                                @Html.ValidationMessageFor(model => model.DESCRIPTION)
+                            </div>
+                            <input type="submit" value="Novo" class="col-sm-2 btn btn-info btn-right pull-right" />
+                        </div>
+                    }
+
+                    <div class="col-sm-12 col-md-12">
+                    </div>
+
+                    @using (Ajax.BeginForm("Edit", "Map", new AjaxOptions { OnBegin = "StartProgress", HttpMethod = "POST", OnSuccess = "TrataRetornoFinish", OnFailure = "TrataRetorno" }))
+                    {
+                        @Html.HiddenFor(model => model.ID_MAP, new { @Id = "ID_MAP_MODIFIED"})
+                        @Html.HiddenFor(model => model.ID_PARENT, new { @Id = "ID_PARENT_MODIFIED" })
+                        <div class="col-sm-12 col-md-12">
+                            @Html.LabelFor(model => model.DESCRIPTION, new { @Class = "control-label col-sm-2 col-md-2" })
+                            <div class="col-sm-8 col-md-8">
+                                @Html.TextBoxFor(model => model.DESCRIPTION, new { @Id = "DESCRIPTION_MODIFIED", @class = "form-control" })
+                                @Html.ValidationMessageFor(model => model.DESCRIPTION)
+                            </div>
+                            <input type="submit" value="Alterar" class="col-sm-2 btn btn-info btn-right pull-right" />
+                        </div>
+                    }*@
+
+                    <div class="col-sm-12 col-md-12">
+                        <div id="DivList">
+
+
+                        </div>
+                    </div>
+
+                    </div>
+                </div>
+
+        </div>
+    </div>
+
+
+</div>
+
+<script>
+    function Submit(id) {
+        
+            $.ajax({
+                url: '@Url.Action("GetPageByIdMap")?Id=' + id,
+                type: 'GET',
+                success: function (data) {
+
+                    $('#DivList').html(data);
+
+                },
+                finally: function(data){
+                    //$('#ID_PARENT_CREATE').val(this.id);
+                },
+                error: function (data) {
+                    alert("Error Submit");
+                }
+            });
+
+    }
+</script>
+

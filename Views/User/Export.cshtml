@@ -1,0 +1,41 @@
+﻿@model IEnumerable<CORE.BackOffice.UI.ViewModels.User.UserViewModel>
+
+@{
+    Layout = "~/Views/Shared/_LayoutExport.cshtml";
+    ViewBag.Title = "Export";
+}
+
+<table class="table" style="border:solid;">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.NAME_USER)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.LOGIN_USER)
+        </th>      
+        <th>
+            @Html.DisplayNameFor(model => model.NAME_PROFILE)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.FL_ACTIVE)
+        </th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.NAME_USER)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.LOGIN_USER)
+        </td>     
+        <td>
+            @Html.DisplayFor(modelItem => item.NAME_PROFILE)
+        </td>
+        <td>
+            @(item.FL_ACTIVE == true ? "Ativo" : "Inativo")
+        </td>
+    </tr>
+}
+
+</table>

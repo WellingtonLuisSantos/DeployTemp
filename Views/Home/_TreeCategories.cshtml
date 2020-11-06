@@ -1,0 +1,20 @@
+﻿@model CORE.BackOffice.UI.Controllers.SeededCategories
+
+
+    @if (Model.Categories.Where(s => s.ID_PARENT == Model.Seed).Any())
+    {
+        <ul>
+            @foreach (var node in Model.Categories)
+            {
+                if (node.ID_PARENT == Model.Seed)
+                {
+                    CORE.BackOffice.UI.Controllers.SeededCategories inner = new CORE.BackOffice.UI.Controllers.SeededCategories { Seed = node.ID_MAP, Categories = Model.Categories };
+                    <li>
+                        <a href="?@node.ID_MAP">@node.DESCRIPTION</a>
+                        @Html.Partial("_TreeCategories", inner)
+                    </li>
+                }
+            }
+        </ul>
+    }
+   

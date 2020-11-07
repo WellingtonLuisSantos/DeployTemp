@@ -527,7 +527,7 @@
                     $("#tbody-documento").append('<tr class="data-id-line-user-' + response.Obj[i].IdDocumento + '"><td><a href="javascript:void(0)">' + response.Obj[i].IdDocumento + '</a></td><td>' + response.Obj[i].Nome +'</td><td><a href="javascript:void(0)" class="btnDownload" data-item-controller="Funcionario" data-item="' + response.Obj[i].IdDocumento + '">Download</a></td><td></td></tr>');
                 }
 
-               showNotification(response.Title, response.Message, 'success');
+                showNotification(response.Title, response.Message, response.Status);
             },
             error: function (error) {
                 //TrataRetornoFinish(error);

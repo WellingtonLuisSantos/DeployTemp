@@ -1,0 +1,147 @@
+﻿@model IEnumerable<CORE.BackOffice.UI.ViewModels.Funcionario.DocumentoViewModel>
+
+@{
+    ViewBag.Title = "Administração - Gestão";
+    Layout = null;
+}
+
+    <div class="panel panel-visible" id="spy6">
+        <div class="panel-heading">
+            <div class="panel-title hidden-xs">
+                <span class="glyphicon glyphicon-tasks"></span>Documentos
+            </div>
+        </div>
+
+        <div class="panel-body pn">
+            <table width="100%" class="table display" id="datatable7" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>
+                            @Html.DisplayNameFor(model => model.FirstOrDefault().IdDocumento)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.FirstOrDefault().Nome)
+                        </th>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody id="tbody-documento">
+                    @foreach (var item in Model)
+                    {
+                        <tr class="data-id-line-user-@item.IdDocumento">
+                            <td>
+                                <a href="javascript:void(0)">@item.IdDocumento</a>
+                            </td>
+                            <td>
+                                @item.Nome
+                            </td>
+                            <td>
+                                <a href="javascript:void(0)" class="btnDownload" data-item-controller="Funcionario" data-item="@item.IdDocumento">Download</a>
+                            </td>
+                            <td>
+                                @if (ViewBag.btnDelete == true)
+                                {
+                                    <label class="btn-excluir btn btn-danger" data-id-item="@item.IdDocumento">Deletar</label>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+        </div>
+        <div class="panel-footer p25 pv15">
+            <div class="section mn">
+                <div class="smart-widget sm-right smr-80">
+                    <div class="section mn">
+                        <div class="smart-widget sm-right smr-80">
+                            <label for="email" class="field prepend-icon">
+                                    <input type="file" name="files" id="files" class="gui-input" multiple />
+                                </label>
+                                <input type="button" for="email" value="Inserir" class="button btdUpload">
+                        </div>
+                        <!-- end .smart-widget section -->
+
+                    </div>
+                </div>
+                <!-- end .smart-widget section -->
+
+            </div>
+        </div>
+    </div>
+        
+        <script src="~/Scripts/jquery.confirm-2.6.1/jquery.confirm.js"></script>
+
+        <script>
+
+    $(document).ready(function () {
+
+        $('.btnEdit').click(function () {
+            ShowViewEdit($(this).attr('data-item'));
+        });
+
+        $('.btnDetail').click(function () {
+            ShowViewDetail($(this).attr('data-item'));
+        });
+
+        $('.btnDownload').click(function () {
+            download($(this).attr('data-item'));
+        });
+
+
+        $(".btn-excluir").confirm({
+            title: "Excluir Funcionário",
+            text: "Você deseja excluir este funcionário?",
+            confirm: function (button) {
+
+                ExcluirRegistro($(button).attr('data-id-item'));
+
+            },
+            cancel: function (button) {
+
+            },
+            confirmButton: "Sim",
+            cancelButton: "Não"
+        });
+    });
+
+    function download(id) {
+         window.open("Funcionario/FileDownload?idDocumento=" + id, "_blank")
+    }
+
+    function ExcluirRegistro(id) {
+
+        var dataObject = JSON.stringify({'ID': id});
+
+        $.ajax({
+            url: '@Url.Action("Delete")',
+            type: 'POST',
+            contentType: 'application/json',
+            data: dataObject,
+            success: function (response) {
+
+                if (response.Status == 'Success') {
+                    $(".data-id-line-user-" + id).remove();
+                    showNotification(response.Title, response.Message, 'success');
+                }
+                else if (response.Status == 'Warning') {
+                    showNotification(response.Title, response.Message, 'warning');
+                }
+                else if (response.Status == 'Error') {
+                    showNotification(response.Title, response.Message, 'danger');
+                }
+                else {
+                    alert("Status de retorno não tratado!");
+                }
+
+            },
+            error: function (data) {
+                alert("Error Submit");
+            }
+        });
+
+    }
+
+
+        </script>

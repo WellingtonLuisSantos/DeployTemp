@@ -1,0 +1,17 @@
+﻿@{
+    Layout = null;
+}
+
+@if (ViewBag.btnUpload)
+{
+    <div class="section">
+        <label class="field prepend-icon file" style="display:inline-block;">
+            <span class="button">Pesquisar</span>
+            <input name="file" class="gui-file" id="file" onchange="document.getElementById('uploader').value = this.value;" type="file">
+            <input class="gui-input" id="uploader" type="text" placeholder="Selecione um arquivo">
+            <label class="field-icon">
+                <i class="fa fa-upload"></i>
+            </label>
+        </label>    
+    </div>
+}

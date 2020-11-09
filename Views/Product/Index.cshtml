@@ -1,0 +1,178 @@
+﻿@model CORE.BackOffice.UI.ViewModels.Product.ProductFilterViewModel
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Administração - Gestão";
+}
+
+<style>
+    .ui-datepicker {
+        z-index: 999999999 !important;
+    }
+</style>
+
+<script src="~/Scripts/pnotify.js"></script>
+
+<div class="panel-body">
+    <div id="divViewSearch" class="admin-form theme-info tab-pane">
+        <div class="panel">
+            <div class="panel-heading">
+                <span class="panel-title fa fa-search">
+                    Produto
+                </span>
+            </div>
+
+            <div class="panel-body admin-form theme-info tab-pane">
+           @using (Html.BeginForm())
+           {
+                    @Html.HiddenFor(model => model.TYPE_EXPORT)
+
+                    <div class="col-lg-12 col-md-12 col-sm-12 filtro-agenda">
+                        <div class="form-group">
+
+                            <div class="col-sm-5 col-md-5">
+                                @Html.LabelFor(model => model.Name, new { @Class = "control-label col-sm-12 col-md-12" })
+                                @Html.TextBoxFor(model => model.Name, new { @class = "form-control" })
+                            </div>
+
+                            <div class="col-sm-6 col-md-6">
+
+                                <div class="option-group field section">
+
+                                    <div class="col-sm-3 col-md-3">
+                                        <label class="option block mt10" for="STATUS_PRODUCT_ALL">
+                                            <input name="FL_ACTIVE" id="STATUS_PRODUCT_ALL" type="radio" @(Model.FL_ACTIVE == null ? "checked=''" : "") value="null">
+                                            <span class="radio"></span>Todos
+                                        </label>
+                                    </div>
+
+                                    <div class="col-sm-3 col-md-3">
+                                        <label class="option block mt10" for="STATUS_PRODUCT_ACTIVE">
+                                            <input name="FL_ACTIVE" id="STATUS_PRODUCT_ACTIVE" type="radio" @(Model.FL_ACTIVE != null && Model.FL_ACTIVE == true ? "checked=''" : "") value="true">
+                                            <span class="radio"></span>Ativo
+                                        </label>
+                                    </div>
+
+                                    <div class="col-sm-3 col-md-3">
+                                        <label class="option block mt10" for="STATUS_PRODUCT_INACTIVE">
+                                            <input name="FL_ACTIVE" id="STATUS_PRODUCT_INACTIVE" type="radio" @(Model.FL_ACTIVE != null && Model.FL_ACTIVE == false ? "checked=''" : "") value="false">
+                                            <span class="radio"></span>Inativo
+                                        </label>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    @Html.Partial("~/Views/Shared/_ButtonsSearchCreate.cshtml")
+
+           }
+
+                @*Resultado da pesquisa*@
+                <div class="form-group">
+                    <div class="col-sm-12 col-md-12">
+                        <div id="divList">
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        </div>
+        <div id="divViewCreate" class="admin-form theme-info tab-pane" style="display:none">
+
+
+        </div>
+
+        <div id="divViewEdit" class="admin-form theme-info tab-pane" style="display:none">
+
+
+        </div>
+
+    </div>
+<div class="modal fade" tabindex='-1' data-backdrop="static" data-keyboard="true" id="myModal" role="dialog">
+    <div class="modal-dialog" style="width: 800px!important;">
+        <div class="modal-content">
+        </div>
+    </div>
+</div>
+
+<script>
+
+    $(document).ready(function () {
+
+        $('#btnSubmit').click(function () {
+            Submit();
+        });
+
+
+        $('#btnCreate').click(function () {
+            ShowViewCreate();
+        });
+
+    });
+
+    function ShowViewCreate() {
+
+        $.ajax({
+            url: '@Url.Action("Create")',
+            type: 'GET',
+            contentType: 'application/json',
+            success: function (data) {
+
+                $('#divViewCreate').html(data);
+                changeView('ShowViewCreate');
+
+            },
+            error: function (data) {
+                alert("Error Submit");
+            }
+        });
+
+    }
+
+    function ShowViewEdit(id) {
+     
+        $.ajax({
+            url: '@Url.Action("Edit")?Id=' + id,
+            type: 'GET',
+            contentType: 'application/json',
+            success: function (data) {
+
+                $('#divViewEdit').html(data);
+                changeView('ShowViewEdit');
+
+            },
+            error: function (data) {
+                alert("Error Submit");
+            }
+        });
+
+    }
+
+    function Submit() {
+
+        var dataObject = JSON.stringify({
+            'Name': $("#@Html.IdFor(model => model.Name)").val(),
+            'FL_ACTIVE': $("input:radio[name=@Html.IdFor(model => model.FL_ACTIVE)]:checked").val()
+        });
+
+        $.ajax({
+            url: '@Url.Action("Index")',
+            type: 'POST',
+            contentType: 'application/json',
+            data: dataObject,
+            success: function (data) {
+                $('#divList').html(data);
+            },
+            error: function (data) {
+                alert("Error Submit");
+            }
+        });
+
+    }
+
+</script>

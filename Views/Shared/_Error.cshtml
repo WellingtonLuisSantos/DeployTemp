@@ -1,0 +1,23 @@
+﻿@model string
+
+<section id="content" class="pn">
+    <div class="center-block mt50 mw800">
+        <h1 class="error-title"> Erro :( </h1>
+        <h2 class="error-subtitle">Ocorreu um erro e nossa equipe técnica já está trabalhando pra resolver.</h2>
+        
+        <a href="javascript:void(0)" id="lblDetail">Detalhe</a>
+        
+        <div id="container-detail"style="display:none">
+             @Model
+        </div>
+    </div>
+
+</section>
+
+<script>
+
+    $('#lblDetail').on('click', function () {
+        $('#container-detail').slideToggle();
+    });
+
+</script>

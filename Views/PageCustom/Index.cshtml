@@ -1,0 +1,11 @@
+﻿@model string
+@{
+    ViewBag.Title = "Custom";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="panel-body">
+    <div id="divViewSearch" class="admin-form theme-info tab-pane">
+        @Html.Raw(Model)
+    </div>
+</div>

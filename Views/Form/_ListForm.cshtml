@@ -1,0 +1,80 @@
+﻿@model IEnumerable<CORE.BackOffice.UI.ViewModels.Form.FormViewModel>
+
+<div class="panel panel-visible" id="spy6">
+    <div class="panel-heading">
+        <div class="panel-title hidden-xs">
+            <span class="glyphicon glyphicon-tasks"></span>Perfis
+
+            @*@Html.Partial("~/Views/Shared/_ButtonsExport.cshtml")*@
+
+        </div>
+    </div>
+
+    <div class="panel-body pn">
+        <table width="100%" class="table display" id="datatable7" cellspacing="0">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.ID_FORM)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.NAME_FORM)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.DESC_FORM)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.ICON_FORM)
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr class="data-id-line-profile-@item.ID_FORM">
+                            <td>
+                                @if (ViewBag.btnEdit == true)
+                                {
+                                    <a href="javascript:void(0)" class="btnEdit" data-item="@item.ID_FORM">@item.ID_FORM</a>
+                                }
+                                else
+                                {
+                                    <a href="javascript:void(0)">@item.ID_FORM</a>
+                                }
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.NAME_FORM)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.DESC_FORM)
+                            </td>
+                            <td>
+                               <span class="@item.ICON_FORM"></span>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+        </table>
+    </div>
+</div>
+<div class="modal fade" tabindex='-1' data-backdrop="static" data-keyboard="true" id="myModal" role="dialog">
+    <div class="modal-dialog" style="width: 800px!important;">
+        <div class="modal-content">
+        </div>
+    </div>
+</div>
+
+<script src="~/Scripts/jquery.confirm-2.6.1/jquery.confirm.js"></script>
+
+<script>
+
+    $(document).ready(function () {
+
+        $('.btnEdit').click(function () {
+            ShowViewEdit($(this).attr('data-item'));
+        });
+
+    });
+
+
+</script>

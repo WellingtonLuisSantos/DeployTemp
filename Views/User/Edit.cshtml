@@ -97,11 +97,10 @@
                         @Html.ValidationMessageFor(model => model.LOGIN_USER, string.Empty, new { @class = "state-error" })
                     </div>
 
-                    @*@Html.LabelFor(model => model.PASSWORD_USER, new { @Class = "control-label col-sm-1 col-md-1" })
-                        <div class="col-sm-5 col-md-5">
-                            @Html.PasswordFor(model => model.PASSWORD_USER, new { @class = "form-control" })
-                        </div>
-                        @Html.ValidationMessageFor(model => model.PASSWORD_USER, string.Empty, new { @class = "state-error" })*@
+                    @Html.LabelFor(model => model.RedefinirSenha, new { @Class = "control-label col-sm-1 col-md-1" })
+                    <div class="col-sm-5 col-md-5">
+                        @Html.DropDownListFor(model => model.IdRedefinirSenha, Model.RedefinirSenha, new { @class = "form-control" })
+                    </div>
 
                 </div>
 

@@ -291,39 +291,45 @@
             </div>
         </div>
 
+        <div class="form-group">
+            <div class="col-sm-3 col-md-3">
 
-        <div class="col-sm-3 col-md-3">
+                <div class="section-divider mv10">
+                    <span>Status</span>
+                </div>
 
-            <div class="section-divider mv10">
-                <span>Status</span>
+                <div class="option-group field section">
+                    <label class="option block mt10" for="USER_ACTIVE">
+                        <input name="FlActive" id="USER_ACTIVE" type="radio" @(Model.FlActive == true ? "checked=''" : "") value="true">
+                        <span class="radio"></span>Ativo
+                    </label>
+                    <label class="option block mt10" for="USER_INACTIVE">
+                        <input name="FlActive" id="USER_INACTIVE" type="radio" @(Model.FlActive == false ? "checked=''" : "") value="false">
+                        <span class="radio"></span>Inativo
+                    </label>
+                </div>
+
+
             </div>
-
-            <div class="option-group field section">
-                <label class="option block mt10" for="USER_ACTIVE">
-                    <input name="FlActive" id="USER_ACTIVE" type="radio" @(Model.FlActive == true ? "checked=''" : "") value="true">
-                    <span class="radio"></span>Ativo
-                </label>
-                <label class="option block mt10" for="USER_INACTIVE">
-                    <input name="FlActive" id="USER_INACTIVE" type="radio" @(Model.FlActive == false ? "checked=''" : "") value="false">
-                    <span class="radio"></span>Inativo
-                </label>
-            </div>
-
-
         </div>
     </div>
 
-            <div class="row">
-                <div class="form-group">
-                    <div class="col-sm-12 col-md-12">
-                        <div id="divList">
-                            @Html.Partial("~/Views/Funcionario/_ListDocumento.cshtml", Model.Documentos)
-                        </div>
+        <div class="row">
+            <div class="form-group">
+                @*<div class="col-sm-6 col-md-6">
+                    <div id="divList">
+                        @Html.Partial("~/Views/Funcionario/_ListDependente.cshtml", Model.Dependentes)
+                    </div>
+                </div>*@
+                <div class="col-sm-12 col-md-12">
+                    <div id="divList">
+                        @Html.Partial("~/Views/Funcionario/_ListDocumento.cshtml", Model.Documentos)
                     </div>
                 </div>
             </div>
+        </div>
 
-            @Html.Partial("~/Views/Shared/_ButtonsModal.cshtml")
+        @Html.Partial("~/Views/Shared/_ButtonsModal.cshtml")
 
         }
 

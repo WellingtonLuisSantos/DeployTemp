@@ -1,0 +1,165 @@
+﻿@model IEnumerable<CORE.BackOffice.UI.ViewModels.Funcionario.DependenteViewModel>
+
+@{
+    ViewBag.Title = "Administração - Gestão";
+    Layout = null;
+}
+
+    <div class="panel panel-visible" id="spy6">
+        <div class="panel-heading">
+            <div class="panel-title hidden-xs">
+                <span class="glyphicon glyphicon-tasks"></span>Dependentes
+            </div>
+        </div>
+
+        <div class="panel-body pn">
+            <table width="100%" class="table display" id="datatable8" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>
+                            @Html.DisplayNameFor(model => model.FirstOrDefault().IdDependente)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.FirstOrDefault().Nome)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.FirstOrDefault().NrCPF)
+                        </th>
+                        @*<th></th>*@
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody id="tbody-dependente">
+                    @foreach (var item in Model)
+                    {
+                        <tr class="data-id-line-dependente-@item.IdDependente">
+                            <td>
+                                <a href="javascript:void(0)">@item.IdDependente</a>
+                            </td>
+                            <td>
+                                @item.Nome
+                            </td>
+                            <td>
+                                @item.NrCPF
+                            </td>
+                            @*<td>
+                                <a href="javascript:void(0)" class="btnDownload" data-item-controller="Funcionario" data-item="@item.IdDependente">Download</a>
+                            </td>*@
+                            <td>
+                                @if (ViewBag.btnDelete == true)
+                                {
+                                    <label class="btn-excluir btn btn-danger" data-id-item="@item.IdDependente">Deletar</label>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+        </div>
+        <div class="panel-footer p25 pv15">
+            <div class="section mn">
+                <div class="smart-widget sm-right smr-80">
+                    <div class="form-group">
+                        <div class="section mn">
+                            <div class="smart-widget sm-right smr-80">
+                                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalDependente">
+                                    Incluir
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal -->
+        <div class="modal fade" id="modalDependente" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Incluir Dependente</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        ...
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                        <button type="button" class="btn btn-primary">Incluir</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+        
+        <script src="~/Scripts/jquery.confirm-2.6.1/jquery.confirm.js"></script>
+
+        <script>
+
+    $(document).ready(function () {
+
+
+        $(".btdAddDependente").click(function () {
+            $("#dialog").dialog("open");
+            return false;
+        });
+
+        $("#btdAddDependente").dialog({
+            title: "Incluir Dependente",
+            text: "Você deseja excluir este funcionário?",
+            confirm: function (button) {
+
+                ExcluirRegistro($(button).attr('data-id-item'));
+
+            },
+            cancel: function (button) {
+
+            },
+            confirmButton: "Sim",
+            cancelButton: "Não"
+        });
+
+    });
+
+    function download(id) {
+         window.open("Funcionario/FileDownload?idDocumento=" + id, "_blank")
+    }
+
+    function ExcluirRegistro(id) {
+
+        var dataObject = JSON.stringify({'ID': id});
+
+        $.ajax({
+            url: '@Url.Action("Delete")',
+            type: 'POST',
+            contentType: 'application/json',
+            data: dataObject,
+            success: function (response) {
+
+                if (response.Status == 'Success') {
+                    $(".data-id-line-user-" + id).remove();
+                    showNotification(response.Title, response.Message, 'success');
+                }
+                else if (response.Status == 'Warning') {
+                    showNotification(response.Title, response.Message, 'warning');
+                }
+                else if (response.Status == 'Error') {
+                    showNotification(response.Title, response.Message, 'danger');
+                }
+                else {
+                    alert("Status de retorno não tratado!");
+                }
+
+            },
+            error: function (data) {
+                alert("Error Submit");
+            }
+        });
+
+    }
+
+
+        </script>

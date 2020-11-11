@@ -316,11 +316,6 @@
 
         <div class="row">
             <div class="form-group">
-                @*<div class="col-sm-6 col-md-6">
-                    <div id="divList">
-                        @Html.Partial("~/Views/Funcionario/_ListDependente.cshtml", Model.Dependentes)
-                    </div>
-                </div>*@
                 <div class="col-sm-12 col-md-12">
                     <div id="divList">
                         @Html.Partial("~/Views/Funcionario/_ListDocumento.cshtml", Model.Documentos)
@@ -328,6 +323,16 @@
                 </div>
             </div>
         </div>
+
+            @*<div class="row">
+            <div class="form-group">
+                <div class="col-sm-12 col-md-12">
+                    <div id="divList2">
+                        @Html.Partial("~/Views/Funcionario/_ListDependente.cshtml", Model.Dependentes)
+                    </div>
+                </div>
+            </div>
+        </div>*@
 
         @Html.Partial("~/Views/Shared/_ButtonsModal.cshtml")
 

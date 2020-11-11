@@ -17,13 +17,16 @@
                 <thead>
                     <tr>
                         <th>
-                            @Html.DisplayNameFor(model => model.FirstOrDefault().IdDependente)
-                        </th>
-                        <th>
                             @Html.DisplayNameFor(model => model.FirstOrDefault().Nome)
                         </th>
                         <th>
                             @Html.DisplayNameFor(model => model.FirstOrDefault().NrCPF)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.FirstOrDefault().DtNascimento)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.FirstOrDefault().Parentesco)
                         </th>
                         @*<th></th>*@
                         <th></th>
@@ -32,26 +35,26 @@
                 <tbody id="tbody-dependente">
                     @foreach (var item in Model)
                     {
-                        <tr class="data-id-line-dependente-@item.IdDependente">
-                            <td>
-                                <a href="javascript:void(0)">@item.IdDependente</a>
-                            </td>
-                            <td>
-                                @item.Nome
-                            </td>
-                            <td>
-                                @item.NrCPF
-                            </td>
-                            @*<td>
-                                <a href="javascript:void(0)" class="btnDownload" data-item-controller="Funcionario" data-item="@item.IdDependente">Download</a>
-                            </td>*@
-                            <td>
-                                @if (ViewBag.btnDelete == true)
-                                {
-                                    <label class="btn-excluir btn btn-danger" data-id-item="@item.IdDependente">Deletar</label>
-                                }
-                            </td>
-                        </tr>
+                    <tr class="data-id-line-dependente-@item.IdDependente">
+                        <td>
+                            @item.Nome
+                        </td>
+                        <td>
+                            @item.NrCPF
+                        </td>
+                        <td>
+                            @item.DtNascimento
+                        </td>
+                        <td>
+                            @item.Parentesco
+                        </td>
+                        <td>
+                            @if (ViewBag.btnDelete == true)
+                            {
+                                <label class="btn-excluir btn btn-danger" data-id-item="@item.IdDependente">Deletar</label>
+                            }
+                        </td>
+                    </tr>
                     }
                 </tbody>
             </table>
@@ -61,13 +64,22 @@
             <div class="section mn">
                 <div class="smart-widget sm-right smr-80">
                     <div class="form-group">
-                        <div class="section mn">
-                            <div class="smart-widget sm-right smr-80">
-                                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalDependente">
-                                    Incluir
-                                </button>
-                            </div>
+                        <div class="col-sm-3 col-md-3">
+                            <input id="NmDependente" type="text" placeholder="Digite o nome" class="form-control" />
                         </div>
+                        <div class="col-sm-3 col-md-3">
+                            <input id="CpfDependente" type="text" placeholder="Cpf" class="form-control cpfField" />
+                        </div>
+                        <div class="col-sm-2 col-md-2">
+                            <input id="DtNascDependente" type="text" placeholder="Data de nascimento" class="form-control dateField" />
+                        </div>
+                        <div class="col-sm-2 col-md-2">
+                            <input id="GrauParestescoDependente" type="text" placeholder="Parentesco" class="form-control" />
+                        </div>
+                        <input type="button" value="Incluir" class="btn btn-primary" onclick="IncluirRegistro();"/>
+                        @*<button id="" type="button" class="btn btn-primary btnIncluirDependente">
+                            Incluir
+                        </button>*@                
                     </div>
                 </div>
             </div>
@@ -101,18 +113,12 @@
 
     $(document).ready(function () {
 
-
-        $(".btdAddDependente").click(function () {
-            $("#dialog").dialog("open");
-            return false;
-        });
-
-        $("#btdAddDependente").dialog({
+        $(".abtnIncluirDependente").dialog({
             title: "Incluir Dependente",
-            text: "Você deseja excluir este funcionário?",
+            text: "Você deseja incluir este dependente?",
             confirm: function (button) {
 
-                ExcluirRegistro($(button).attr('data-id-item'));
+                IncluirRegistro($("#NmDependente").val(), $("#CpfDependente").val(), $("#DtNascDependente").val(), $("#GrauParestescoDependente").val());
 
             },
             cancel: function (button) {
@@ -128,19 +134,24 @@
          window.open("Funcionario/FileDownload?idDocumento=" + id, "_blank")
     }
 
-    function ExcluirRegistro(id) {
+    function IncluirRegistro() {
 
-        var dataObject = JSON.stringify({'ID': id});
+        var dataObject = JSON.stringify({
+            'Nome': $("#NmDependente").val(),
+            'NrCPF': $("#CpfDependente").val(),
+            'DtNascimento': $("#DtNascDependente").val(),
+            'IdParentesco':  $("#GrauParestescoDependente").val()
+        });
 
         $.ajax({
-            url: '@Url.Action("Delete")',
+            url: '@Url.Action("IncluirDependente")',
             type: 'POST',
             contentType: 'application/json',
             data: dataObject,
             success: function (response) {
 
                 if (response.Status == 'Success') {
-                    $(".data-id-line-user-" + id).remove();
+                    //$(".data-id-line-user-" + id).remove();
                     showNotification(response.Title, response.Message, 'success');
                 }
                 else if (response.Status == 'Warning') {

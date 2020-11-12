@@ -1,0 +1,140 @@
+﻿@model CORE.BackOffice.UI.ViewModels.LoginViewModel
+
+@{
+    Layout = "~/Views/Shared/_LayoutLogin.cshtml";
+    ViewBag.Title = "Administração - Gestão de Produtos";
+}
+
+<div class="admin-form theme-primary tab-pane mw600 active" id="login1" role="tabpanel">
+    <div class="panel panel-primary heading-border">
+        <div class="panel-heading">
+            <div align="center">
+                <img src="~/Images/logo-farmaqualy-min.png" style="width: 250px" />
+            </div>
+        </div>
+
+        @using (Ajax.BeginForm(null, null, new AjaxOptions { OnBegin = "StartProgress", HttpMethod = "POST", OnSuccess = "TrataRetorno", OnFailure = "TrataRetorno" }, new { id = "formlogin" }))
+        {
+            <div class="panel-body p25 pt10">
+                <div class="row">
+                    <div class="col-lg-8 col-md-8 col-lg-offset-2 col-md-offset-2">
+                        <div id="errorMessage" class="alert alert-danger" style="display: none; text-align: center !important; margin-bottom: 0 !important">
+                        </div>
+                        <div id="warningMessage" class="alert alert-warning" style="display: none; text-align: center !important; margin-bottom: 0 !important">
+                        </div>
+                        <div id="infoMessage" class="alert alert-info" style="display: none; text-align: center !important; margin-bottom: 0 !important">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <label for="username" class="field prepend-icon">
+                        @Html.TextBoxFor(model => model.UserName, new { @placeholder = "Digite seu usuário", @class = "gui-input" })
+                        <label for="username" class="field-icon">
+                            <i class="fa fa-user"></i>
+                        </label>
+                    </label>
+                    @Html.ValidationMessageFor(model => model.UserName)
+                </div>
+                <!-- end section -->
+
+                <div class="section">
+                    <label for="password" class="field prepend-icon">
+                        @Html.PasswordFor(model => model.Password, new { @placeholder = "Digite sua senha", @class = "gui-input" })
+                        <label for="password" class="field-icon">
+                            <i class="fa fa-lock"></i>
+                        </label>
+                    </label>
+                    @Html.ValidationMessageFor(model => model.Password)
+                </div>
+            </div>
+            <!-- end .form-body section -->
+            <div class="panel-footer">
+                <button type="submit" class="button btn-default">Entrar</button>
+                @*<div class="login-links text-right">
+                    <a href="@Url.Action("ResetPassword", "Login")" class="" title="False Credentials">Esqueci minha senha</a>
+                </div>*@
+            </div>
+        }
+       
+        <a class="navbar-brand" href="javascript:void(0)">
+            <b>@Html.Raw(ViewBag.Address) v.3</b>
+        </a>
+    </div>
+    <!-- end .panel-->
+
+
+</div>
+
+@section Scripts {
+    <script language="javascript">
+        function TrataRetorno(response) {
+
+            if (response.result == 'OK') {
+                window.location = response.url;
+            }
+            else if (response.result == 'Error') {
+                alertCustom('Error', response.message);
+            }
+            else if (response.result == 'Warning') {
+                alertCustom('Warning', response.message);
+            }
+
+        }
+
+        function alertCustom(type, message) {
+
+            if (type == 'Error') {
+                $('#warningMessage').hide();
+                $('#InfoMessage').hide();
+
+                $('#errorMessage').show();
+                $('#errorMessage').text(message);
+                StopProgress();
+            }
+            else if (type == 'Warning') {
+                $('#errorMessage').hide();
+                $('#InfoMessage').hide();
+
+                $('#warningMessage').show();
+                $('#warningMessage').text(message);
+                StopProgress();
+            }
+            else if (type == 'Info') {
+                $('#warningMessage').hide();
+                $('#errorMessage').hide();
+
+                $('#InfoMessage').show();
+                $('#InfoMessage').text(message);
+                StopProgress();
+            }
+
+        }
+
+        function StartProgress() {
+
+            NProgress.start();
+            $.blockUI({
+                message: '<h3 style="font-weight:bold;">Carregando...</h3>', css: {
+                    border: 'none',
+                    padding: '15px',
+                    backgroundColor: '#000',
+                    '-webkit-border-radius': '10px',
+                    '-moz-border-radius': '10px',
+                    opacity: .5,
+                    color: '#fff'
+                }
+            });
+
+        }
+
+        function StopProgress() {
+            NProgress.done();
+            $.unblockUI();
+        }
+
+    </script>
+
+
+
+}

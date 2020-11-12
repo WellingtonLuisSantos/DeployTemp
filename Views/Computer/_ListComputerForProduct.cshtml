@@ -1,0 +1,166 @@
+﻿@model IEnumerable<CORE.BackOffice.UI.ViewModels.Computer.ComputerViewModel>
+
+@{
+    ViewBag.Title = "Administração - Gestão";
+    CORE.Domain.Entities.User user = ((CORE.Domain.Entities.User)Session["Usuario"]);
+}
+
+@if (user.Profile.ProfileXForm.Where(x => x.IdForm == (int)CORE.BackOffice.UI.Enum.FormEnum.Product && x.FlSearch == true).Any())
+{
+<div class="panel panel-visible" id="spy6">
+    <div class="panel-heading">
+        <div class="panel-title hidden-xs">
+            <span class="glyphicon glyphicon-tasks"></span>CPU
+          
+                @Html.Partial("~/Views/Shared/_ButtonsExport.cshtml")
+            
+        </div>
+    </div>
+  
+    <div class="panel-body pn">
+        <table width="100%" class="table display" id="datatable7" cellspacing="0">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.IdComputer)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Ip)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.HostName)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.FL_ACTIVE)
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr class="data-id-line-profile-@item.IdComputer data-id-line-computerproduct-@item.IDComputerXProduct">
+                        <td>
+                            @if (user.Profile.ProfileXForm.Where(x => x.IdForm == (int)CORE.BackOffice.UI.Enum.FormEnum.Computer && x.FlUpdate == true).Any())
+                            {
+                                <a href="javascript:void(0)" class="btnEdit" data-item-controller="Computer" data-item="@item.IdComputer">@item.IdComputer</a>
+                            }
+                            else
+                            {
+                                <a href="javascript:void(0)">@item.IdComputer</a>
+                            }
+                         </td>
+                        <td>
+                            @item.Ip
+                        </td>
+                        <td>
+                            @item.HostName
+                        </td>
+                        <td>
+                            @(item.FL_ACTIVE == true ? "Ativo" : "Inativo")
+                        </td>
+                        <td>
+                            @if (user.Profile.ProfileXForm.Where(x => x.IdForm == (int)CORE.BackOffice.UI.Enum.FormEnum.Computer && x.FlDelete == true).Any())
+                            {
+                                <label class="btn-excluir btn btn-danger" data-item-controller="ComputerProduct" data-id-item="@item.IDComputerXProduct">-</label>
+                            }
+                        </td>
+
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+}
+else
+{
+    <div class="panel panel-visible" id="spy6">
+        <div class="panel-heading">
+            <div class="panel-title hidden-xs">
+                <span class="glyphicon glyphicon-tasks"></span>CPU
+            </div>
+        </div>
+
+        <div class="panel-body pn">
+            <table width="100%" class="table display" id="datatable7" cellspacing="0">
+                <section id="content" class="pn">
+                    <div class="center-block mt50 mw800">
+                        <h2 class="error-subtitle">Você não possui permissão para listar os computadores.</h2>
+                </section>
+            </table>
+        </div>
+    </div>
+}
+
+<div class="modal fade" tabindex='-1' data-backdrop="static" data-keyboard="true" id="myModal" role="dialog">
+    <div class="modal-dialog" style="width: 800px!important;">
+        <div class="modal-content">
+        </div>
+    </div>
+</div>
+
+
+<script src="~/Scripts/jquery.confirm-2.6.1/jquery.confirm.js"></script>
+
+
+<script>
+
+    $(document).ready(function () {
+
+        $('.btnEdit').click(function () {
+            ShowViewEditWithController($(this).attr('data-item-controller'), $(this).attr('data-item'));
+        });
+
+        $(".btn-excluir").confirm({
+            title: "Excluir CPU",
+            text: "Você deseja excluir este Produto?",
+            confirm: function (button) {
+
+                ExcluirRegistro($(button).attr('data-item-controller'), $(button).attr('data-id-item'));
+
+            },
+            cancel: function (button) {
+
+            },
+            confirmButton: "Sim",
+            cancelButton: "Não"
+        });
+
+    });
+
+    function ExcluirRegistro(controller, id) {
+
+        var dataObject = JSON.stringify({ 'ID': id });
+
+        $.ajax({
+            url: controller + '/Delete',
+            type: 'POST',
+            contentType: 'application/json',
+            data: dataObject,
+            success: function (response) {
+
+                if (response.Status == 'Success') {
+                    $(".data-id-line-computerproduct-" + id).remove();
+                    showNotification(response.Title, response.Message, 'success');
+                }
+                else if (response.Status == 'Warning') {
+                    showNotification(response.Title, response.Message, 'warning');
+                }
+                else if (response.Status == 'Error') {
+                    showNotification(response.Title, response.Message, 'danger');
+                }
+                else {
+                    alert("Status de retorno não tratado!");
+                }
+
+            },
+            error: function (data) {
+                alert("Error Submit");
+            }
+        });
+
+    }
+
+</script>
+

@@ -1,0 +1,146 @@
+﻿@model CORE.BackOffice.UI.ViewModels.ComputerProduct.ComputerProductFilterViewModel
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Administração - Gestão de Produtos";
+}
+
+<script src="~/Scripts/pnotify.js"></script>
+
+<div class="panel-body">
+    <div id="divViewSearch" class="admin-form theme-info tab-pane">
+        <div class="panel">
+            <div class="panel-heading">
+                <span class="panel-title fa fa-search">
+                    CPU Produto
+                </span>
+            </div>
+
+            <div class="panel-body admin-form theme-info tab-pane">
+            @using (Html.BeginForm())
+            {
+                    <div class="col-lg-12 col-md-12 col-sm-12 filtro-agenda">
+                        <div class="form-group">
+
+                            @Html.LabelFor(model => model.Computer, new { @Class = "control-label col-sm-1 col-md-1" })
+                            <div class="col-sm-3 col-md-3">
+                                @Html.DropDownListFor(model => model.IdComputer, Model.Computer, new { @class = "form-control" })
+                            </div>
+
+                            @Html.LabelFor(model => model.Product, new { @Class = "control-label col-sm-1 col-md-1" })
+                            <div class="col-sm-3 col-md-3">
+                                @Html.DropDownListFor(model => model.IdProduct, Model.Product, new { @class = "form-control" })
+                            </div>
+
+                        </div>
+                    </div>
+
+
+                    @Html.Partial("~/Views/Shared/_ButtonsSearchCreate.cshtml")
+
+            }
+
+                @*Resultado da pesquisa*@
+                <div class="form-group">
+                    <div class="col-sm-12 col-md-12">
+                        <div id="divList">
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            </div>
+        </div>
+        <div id="divViewCreate" class="admin-form theme-info tab-pane" style="display:none">
+
+
+        </div>
+
+        <div id="divViewEdit" class="admin-form theme-info tab-pane" style="display:none">
+
+
+        </div>
+ 
+    </div>
+    <div class="modal fade" tabindex='-1' data-backdrop="static" data-keyboard="true" id="myModal" role="dialog">
+        <div class="modal-dialog" style="width: 800px!important;">
+            <div class="modal-content">
+            </div>
+        </div>
+    </div>
+
+    <script>
+
+        $(document).ready(function () {
+
+            $('#btnSubmit').click(function () {
+                Submit();
+            });
+
+            $('#btnCreate').click(function () {
+                ShowViewCreate();
+            });
+
+        });
+
+        function ShowViewCreate() {
+
+            $.ajax({
+                url: '@Url.Action("Create")',
+                type: 'GET',
+                contentType: 'application/json',
+                success: function (data) {
+
+                    $('#divViewCreate').html(data);
+                    changeView('ShowViewCreate');
+
+                },
+                error: function (data) {
+                    alert("Error Submit");
+                }
+            });
+
+        }
+
+        function ShowViewEdit(id) {
+
+            $.ajax({
+                url: '@Url.Action("Edit")?Id=' + id,
+                type: 'GET',
+                contentType: 'application/json',
+                success: function (data) {
+
+                    $('#divViewEdit').html(data);
+                    changeView('ShowViewEdit');
+
+                },
+                error: function (data) {
+                    alert("Error Submit");
+                }
+            });
+
+        }
+
+        function Submit() {
+
+            var dataObject = JSON.stringify({
+                'IdComputer': $("#@Html.IdFor(model => model.IdComputer)").val(),
+                'IdProduct': $("#@Html.IdFor(model => model.IdProduct)").val()
+            });
+
+            $.ajax({
+                url: '@Url.Action("Index")',
+                type: 'POST',
+                contentType: 'application/json',
+                data: dataObject,
+                success: function (data) {
+                    $('#divList').html(data);
+                },
+                error: function (data) {
+                    alert("Error Submit");
+                }
+            });
+
+        }
+
+    </script>

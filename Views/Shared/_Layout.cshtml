@@ -83,12 +83,13 @@
 
     <div id="main" class="">
 
-        <header class="navbar navbar-fixed-top bg-light">
-            <div class="navbar-branding">
+        <header class="navbar navbar-fixed-top bg-success">
+            <div class="navbar-branding dark bg-success">
                 <a class="navbar-brand" href="javascript:void(0)">
                     <b> @Html.Raw(ViewBag.name_system)</b>
                 </a>
-                <span id="toggle_sidemenu_l" class="ad ad-lines" style="color:#@ViewBag.color_system!Important"></span>
+                <span id="toggle_sidemenu_l" class="ad ad-lines"></span>
+                @*  style="color:#@ViewBag.color_system!Important" *@
             </div>
             <ul class="nav navbar-nav navbar-right">
 
@@ -160,7 +161,8 @@
             </ul>
 
         </header>
-        <aside id="sidebar_left" class="nano nano-primary affix" style="background-color:#@ViewBag.color_system!Important">
+        <aside id="sidebar_left" class="nano nano-primary affix sidebar-light">
+            @*style="background-color:#@ViewBag.color_system!Important"*@
 
             <div class="sidebar-left-content nano-content">
 

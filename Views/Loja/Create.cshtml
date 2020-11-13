@@ -25,7 +25,7 @@
 
     @using (Ajax.BeginForm("Create", "Loja", new AjaxOptions { OnBegin = "StartProgress", HttpMethod = "POST", OnSuccess = "TrataRetorno", OnFailure = "TrataRetorno" }))
     {
-        <div class="panel-body admin-form theme-info tab-pane">
+        <div class="panel-body admin-form theme-success bg-light panel-success tab-pane">
             <div class="section row">
                 <div class="col-lg-12 col-md-12 col-sm-12">
                     @Html.ValidationSummary(true, string.Empty, new { @class = "alert alert-danger", Id = "errosDefinirMedico", @style = "display: none;" })

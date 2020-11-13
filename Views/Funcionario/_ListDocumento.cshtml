@@ -9,7 +9,7 @@
         <div class="panel-body pn">
             <table width="100%" class="table display" id="datatable7" cellspacing="0">
                 <thead>
-                    <tr class="primary">
+                    <tr class="success">
                         <th>
                             @Html.DisplayNameFor(model => model.FirstOrDefault().IdDocumento)
                         </th>
@@ -36,7 +36,7 @@
                             <td>
                                 @if (ViewBag.btnDelete == true)
                                 {
-                                    <label class="btn-excluir btn btn-danger" data-id-item="@item.IdDocumento">Deletar</label>
+                                    <label class="btn-excluir-documento btn btn-danger" data-id-item="@item.IdDocumento">Deletar</label>
                                 }
                             </td>
                         </tr>

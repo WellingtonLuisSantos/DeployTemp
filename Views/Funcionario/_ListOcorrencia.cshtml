@@ -1,0 +1,207 @@
+﻿@model IEnumerable<CORE.BackOffice.UI.ViewModels.Funcionario.OcorrenciaViewModel>
+
+@{
+    ViewBag.Title = "Administração - Gestão";
+    Layout = null;
+}
+
+<div class="form-horizontal">
+    <div class="form-group">
+        <div class="col-sm-3 col-md-3">
+            <input id="IdOcorrencia" type="text" disabled placeholder="" class="form-control" />
+        </div>        
+        <div class="col-sm-3 col-md-3">
+            <input id="DtOcorrencia" type="text" placeholder="Digite a data" class="form-control dateField" />
+        </div>
+        <div class="col-sm-3 col-md-3">
+            <input id="NmOcorrencia" type="text" placeholder="Digite o nome" class="form-control" />
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-12 col-md-12">
+            <textarea id="DescricaoOcorrencia" rows="5" cols="33" placeholder="Descricao" class="form-control"></textarea>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-12 col-md-12">
+            <input type="button" style="width: 100px!important; float: left;" value="Salvar" class="btn btn-success" onclick="IncluirOcorrencia();" />
+        </div>
+    </div>
+</div>
+<div class="panel panel-visible" id="spy6Ocorrencia">
+    <div class="panel-body pn">
+        <table width="100%" class="table .table-striped" id="datatableOcorrencia" cellspacing="0">
+            <thead>
+                <tr class="success">
+                    <th>
+                        @Html.DisplayNameFor(model => model.FirstOrDefault().DtOcorrencia)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.FirstOrDefault().Nome)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.FirstOrDefault().Descricao)
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody id="tbody-ocorrencia">
+                @foreach (var item in Model)
+                {
+                <tr class="line-ocorrencia" id="data-id-line-ocorrencia-@item.IdOcorrencia" identific="@item.IdOcorrencia">
+                    <td id="data-id-line-ocorrencia-dtocorrencia-@item.IdOcorrencia">
+                        @item.DtOcorrencia.ToString("dd/MM/yyyy")
+                    </td>
+                    <td id="data-id-line-ocorrencia-nome-@item.IdOcorrencia">
+                        @item.Nome
+                    </td>
+                    <td id="data-id-line-ocorrencia-descricao-@item.IdOcorrencia">
+                        @item.Descricao
+                    </td>
+                    <td>
+                        <label class="btn-excluir-ocorrencia btn btn-danger" data-id-item="@item.IdOcorrencia">Deletar</label>
+                    </td>
+                </tr>
+                }
+            </tbody>
+        </table>
+
+    </div>
+</div>
+
+<style>
+    .line-ocorrencia:hover {
+        background-color: #70ca63;
+        color: white;
+    }
+</style>
+
+
+<script src="~/Scripts/jquery.confirm-2.6.1/jquery.confirm.js"></script>
+
+<script>
+
+
+    $(document).ready(function () {
+
+        addEventOcorrencia();
+        addEventoEditOcorrencia();
+
+    });
+
+    function addEventoEditOcorrencia()
+    {
+        $(".line-ocorrencia").click(function (button) {
+            var id = $(this).attr('identific').trim();
+
+            $('#IdOcorrencia').val(id);
+            $('#DtOcorrencia').val($('#data-id-line-ocorrencia-dtocorrencia-' + id).text().trim());
+            $('#NmOcorrencia').val($('#data-id-line-ocorrencia-nome-' + id).text().trim());
+            $('#DescricaoOcorrencia').val($('#data-id-line-ocorrencia-descricao-' + id).text().trim());
+        });
+    }
+
+    function addEventOcorrencia()
+    {
+        $(".btn-excluir-ocorrencia").confirm({
+            title: "Excluir Ocorrencia",
+            text: "Você deseja excluir esta ocorrencia?",
+            confirm: function (button) {
+
+                ExcluirOcorrencia($(button).attr('data-id-item'));
+
+            },
+            cancel: function (button) {
+
+            },
+            confirmButton: "Sim",
+            cancelButton: "Não"
+        });
+    }
+
+    function IncluirOcorrencia() {
+
+        var dataObject = JSON.stringify({
+            'IdOcorrencia': $("#IdOcorrencia").val(),
+            'IdFuncionario': $("#IdFuncionario").val(),
+            'Nome': $("#NmOcorrencia").val(),
+            'Descricao': $("#DescricaoOcorrencia").val(),
+            'DtOcorrencia': $("#DtOcorrencia").val()
+        });
+
+        $.ajax({
+            url: '@Url.Action("IncluirOcorrencia")',
+            type: 'POST',
+            contentType: 'application/json',
+            data: dataObject,
+            success: function (response) {
+
+               if (response.Status == 'Success') {
+
+                   $("#data-id-line-ocorrencia-" + response.Obj.IdOcorrencia).remove();
+                   $("#tbody-ocorrencia").append('<tr class="line-ocorrencia" id="data-id-line-ocorrencia-' + response.Obj.IdOcorrencia + '"  identific="' + response.Obj.IdOcorrencia + '"><td id="data-id-line-ocorrencia-dtocorrencia-' + response.Obj.IdOcorrencia + '">' + $("#DtOcorrencia").val() + '</td><td id="data-id-line-ocorrencia-nome-' + response.Obj.IdOcorrencia + '">' + response.Obj.Nome + '</td><td id="data-id-line-ocorrencia-descricao-' + response.Obj.IdOcorrencia + '">' + response.Obj.Descricao + '</td><td><label class="btn-excluir-ocorrencia btn btn-danger" data-id-item="' + response.Obj.IdOcorrencia + '">Deletar</label></td></tr>');
+
+                   $("#IdOcorrencia").val('');
+                   $("#NmOcorrencia").val('');
+                   $("#DescricaoOcorrencia").val('');
+                   $("#DtOcorrencia").val('');
+                   addEventoEditOcorrencia();
+                   addEventOcorrencia();
+                   showNotification(response.Title, response.Message, 'success');
+                }
+                else if (response.Status == 'Warning') {
+                    showNotification(response.Title, response.Message, 'warning');
+                }
+                else if (response.Status == 'Error') {
+                    showNotification(response.Title, response.Message, 'danger');
+                }
+                else {
+                    alert("Status de retorno não tratado!");
+                }
+
+            },
+            error: function (data) {
+                alert("Error Submit");
+            }
+        });
+
+    }
+
+    function ExcluirOcorrencia(id) {
+
+        var dataObject = JSON.stringify({'Id': id});
+
+        $.ajax({
+            url: '@Url.Action("DeleteOcorrencia")',
+            type: 'POST',
+            contentType: 'application/json',
+            data: dataObject,
+            success: function (response) {
+
+                if (response.Status == 'Success') {
+                    $("#IdOcorrencia").val('');
+                    $("#NmOcorrencia").val('');
+                    $("#DescricaoOcorrencia").val('');
+                    $("#DtOcorrencia").val('');
+                    $("#data-id-line-ocorrencia-" + id).remove();
+                    showNotification(response.Title, response.Message, 'success');
+                }
+                else if (response.Status == 'Warning') {
+                    showNotification(response.Title, response.Message, 'warning');
+                }
+                else if (response.Status == 'Error') {
+                    showNotification(response.Title, response.Message, 'danger');
+                }
+                else {
+                    alert("Status de retorno não tratado!");
+                }
+
+            },
+            error: function (data) {
+                alert("Error Submit");
+            }
+        });
+
+    }
+
+</script>

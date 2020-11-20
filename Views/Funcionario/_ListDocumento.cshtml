@@ -23,7 +23,7 @@
                 <tbody id="tbody-documento">
                     @foreach (var item in Model)
                     {
-                        <tr class="data-id-line-user-@item.IdDocumento">
+                        <tr class="data-id-line-documento-@item.IdDocumento">
                             <td>
                                 <a href="javascript:void(0)">@item.IdDocumento</a>
                             </td>
@@ -84,22 +84,68 @@
             download($(this).attr('data-item'));
         });
 
+        addEventDeleteDocumento()
 
-        $(".btn-excluir").confirm({
-            title: "Excluir Funcionário",
-            text: "Você deseja excluir este funcionário?",
-            confirm: function (button) {
-
-                ExcluirRegistro($(button).attr('data-id-item'));
-
-            },
-            cancel: function (button) {
-
-            },
-            confirmButton: "Sim",
-            cancelButton: "Não"
-        });
     });
+
+            function addEventDeleteDocumento()
+            {
+                $(".btn-excluir-documento").confirm({
+                    title: "Excluir Documento",
+                    text: "Você deseja excluir este documento?",
+                    confirm: function (button) {
+
+                        ExcluirRegistro($(button).attr('data-id-item'));
+
+                    },
+                    cancel: function (button) {
+
+                    },
+                    confirmButton: "Sim",
+                    cancelButton: "Não"
+                });
+            }
+
+              function upload() {
+        var formData = new FormData();
+        var totalFiles = document.getElementById("files").files.length;
+
+        for (var i = 0; i < totalFiles; i++) {
+
+            var file = document.getElementById("files").files[i];
+
+            formData.append("files", file);
+        }
+
+        formData.append("idFuncionario", $("#IdFuncionario").val());
+
+        $.ajax({
+            type: 'post',
+            url: '@Url.Action("fileupload")',
+            data: formData,
+            dataType: 'json',
+            contentType: false,
+            processData: false,
+            success: function (response) {
+
+
+                var i;
+                for (i = 0; i < response.Obj.length; i++) {
+                    $("#tbody-documento").append('<tr class="data-id-line-documento-' + response.Obj[i].IdDocumento + '"><td><a href="javascript:void(0)">' + response.Obj[i].IdDocumento + '</a></td><td>' + response.Obj[i].Nome +'</td><td><a href="javascript:void(0)" class="btnDownload" data-item-controller="Funcionario" data-item="' + response.Obj[i].IdDocumento + '">Download</a></td><td><label class="btn-excluir-documento btn btn-danger" data-id-item="' + response.Obj[i].IdDocumento + '">Deletar</label></td></tr>');
+                }
+
+                $('.btnDownload').click(function () {
+                    download($(this).attr('data-item'));
+                });
+
+                addEventDeleteDocumento();
+                TrataRetornoEManterTela(response);
+            },
+            error: function (error) {
+                showNotification(response.Title, response.Message, 'warning');
+            }
+        });
+    }
 
     function download(id) {
          window.open("Funcionario/FileDownload?idDocumento=" + id, "_blank")
@@ -107,17 +153,17 @@
 
     function ExcluirRegistro(id) {
 
-        var dataObject = JSON.stringify({'ID': id});
+        var dataObject = JSON.stringify({'Id': id});
 
         $.ajax({
-            url: '@Url.Action("Delete")',
+            url: '@Url.Action("DeleteDocumento")',
             type: 'POST',
             contentType: 'application/json',
             data: dataObject,
             success: function (response) {
 
                 if (response.Status == 'Success') {
-                    $(".data-id-line-user-" + id).remove();
+                    $(".data-id-line-documento-" + id).remove();
                     showNotification(response.Title, response.Message, 'success');
                 }
                 else if (response.Status == 'Warning') {

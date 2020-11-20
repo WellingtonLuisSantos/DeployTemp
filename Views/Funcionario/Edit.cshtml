@@ -13,6 +13,8 @@
 
 <script src="~/Scripts/jquery.validate.js"></script>
 <script src="~/Scripts/jquery.validate.unobtrusive.js"></script>
+<script src="~/Scripts/Utils/stringUtils.js"></script>
+@Scripts.Render("~/bundles/momentjs")
 
 <div class="panel">
     <div class="panel-heading">
@@ -42,7 +44,7 @@
 
             <div class="tab-block mb25">
                 <ul class="nav nav-tabs tabs-border tabs-success nav-justified">
-                    <li  class="active">
+                    <li class="active">
                         <a href="#tab15_3" data-toggle="tab"><i class="fa fa-list-alt text-purple pr5"></i>Dados</a>
                     </li>
                     <li>
@@ -51,32 +53,33 @@
                     <li>
                         <a href="#tab15_2" data-toggle="tab"><i class="fa fa-upload text-purple pr5"></i>Documentos</a>
                     </li>
+                    <li>
+                        <a href="#tab15_4" data-toggle="tab"><i class="fa fa-newspaper-o text-purple pr5"></i>Ocorrência</a>
+                    </li>
                 </ul>
                 <div class="tab-content">
                     <div id="tab15_1" class="tab-pane">
-                        <div class="row">
                             <div class="form-group">
-                                <div class="col-sm-12 col-md-12">
-                                    <div id="divList2">
                                         @Html.Partial("~/Views/Funcionario/_ListDependente.cshtml", Model.Dependentes)
-                                    </div>
-                                </div>
-                            </div>
                         </div>
                     </div>
                     <div id="tab15_2" class="tab-pane">
-                        <div class="row">
-                            <div class="form-group">
+                        
+                        <div class="form-group">
                                 <div class="col-sm-12 col-md-12">
                                     <div id="divList">
                                         @Html.Partial("~/Views/Funcionario/_ListDocumento.cshtml", Model.Documentos)
                                     </div>
                                 </div>
-                            </div>
                         </div>
                     </div>
-                    <div id="tab15_3" class="tab-pane active">
-                        @*<div class="row">*@
+                    <div id="tab15_4" class="tab-pane">
+                            <div class="form-group">
+                                @Html.Partial("~/Views/Funcionario/_ListOcorrencia.cshtml", Model.Ocorrencias)
+                            </div>
+                           
+                        </div>
+                        <div id="tab15_3" class="tab-pane active">
                             <div class="form-group">
                                 <div class="col-sm-12 col-md-12">
                                     <div class="form-horizontal">
@@ -330,16 +333,14 @@
                                                 @Html.LabelFor(model => model.NomeCargo, new { @Class = "control-label" })
                                                 @Html.DropDownListFor(model => model.IdCargo, Model.Cargo, new { @class = "form-control" })
                                             </div>
-                                            <div class="col-md-6 pl20 prn">
-                                                <div class="section mv15">
-                                                    <div class="option-group field">
-                                                        <label class="option option-success">
-                                                            <input type="checkbox" name="checked" value="checked" checked="">
-                                                            <span class="checkbox"></span>PCD
-                                                        </label>
-                                                    </div>
+                                            @if (Model.AlertaExperiencia())
+                                            {
+                                                <div class="col-sm-3 col-md-3">
+                                                    @Html.LabelFor(model => model.ExperienviaVencer, new { @Class = "control-label" })
+                                                    @Html.DropDownListFor(model => model.IdExperienciaVencer, Model.ExperienviaVencer, new { @class = "form-control" })
                                                 </div>
-                                            </div>
+                                            }
+
                                         </div>
 
                                         <div class="form-group">
@@ -366,15 +367,14 @@
                                     </div>
                                 </div>
                             </div>
-                        @*</div>*@
+                        </div>
                     </div>
-                </div>
             </div>
 
 
-           
 
-           
+
+
 
             @Html.Partial("~/Views/Shared/_ButtonsModal.cshtml")
 
@@ -415,46 +415,6 @@
         $(".cpfField").inputmask("999.999.999-99", { "clearIncomplete": true });
 
     });
-
-    function upload() {
-        var formData = new FormData();
-        var totalFiles = document.getElementById("files").files.length;
-
-        for (var i = 0; i < totalFiles; i++) {
-
-            var file = document.getElementById("files").files[i];
-
-            formData.append("files", file);
-        }
-
-        formData.append("idFuncionario", '@Model.IdFuncionario');
-
-        $.ajax({
-            type: 'post',
-            url: '@Url.Action("fileupload")',
-            data: formData,
-            dataType: 'json',
-            contentType: false,
-            processData: false,
-            success: function (response) {
-                
-
-                var i;
-                for (i = 0; i < response.Obj.length; i++) {
-                    $("#tbody-documento").append('<tr class="data-id-line-user-' + response.Obj[i].IdDocumento + '"><td><a href="javascript:void(0)">' + response.Obj[i].IdDocumento + '</a></td><td>' + response.Obj[i].Nome +'</td><td><a href="javascript:void(0)" class="btnDownload" data-item-controller="Funcionario" data-item="' + response.Obj[i].IdDocumento + '">Download</a></td><td></td></tr>');
-                }
-
-                $('.btnDownload').click(function () {
-                    download($(this).attr('data-item'));
-                });
-
-                TrataRetornoEManterTela(response);
-            },
-            error: function (error) {
-                showNotification(response.Title, response.Message, 'warning');
-            }
-        });
-    }
 
 </script>
 

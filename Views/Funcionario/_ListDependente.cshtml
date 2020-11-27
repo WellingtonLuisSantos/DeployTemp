@@ -7,25 +7,30 @@
 
     <div class="form-horizontal">
         <div class="form-group">
-            <div class="col-sm-1 col-md-1">
+            <div class="col-sm-3 col-md-3">
                 <input id="IdDependente" type="text" disabled class="form-control" />
             </div>
             <div class="col-sm-4 col-md-4">
                 <input id="NmDependente" type="text" placeholder="Digite o nome" class="form-control" />
             </div>
-            <div class="col-sm-3 col-md-3">
+            <div class="col-sm-2 col-md-2">
                 <input id="CpfDependente" type="text" placeholder="Cpf" class="form-control cpfField" />
             </div>
             <div class="col-sm-2 col-md-2">
                 <input id="DtNascDependente" type="text" placeholder="Data de nascimento" class="form-control dateField" />
             </div>
-            <div class="col-sm-2 col-md-2">
+            <div class="col-sm-1 col-md-1">
                 <input id="GrauParestescoDependente" type="text" placeholder="Parentesco" class="form-control" />
             </div>
         </div>
+        <div class="form-group">
+
+
+        
+        </div>
             <div class="form-group">
                 <div class="col-sm-12 col-md-12">
-                    <input type="button" value="Salvar" class="btn btn-success" onclick="IncluirDependente();" />
+                    <input type="button" style="width: 100px!important; float: left;" value="Salvar" class="btn btn-success" onclick="IncluirDependente();" />
                 </div>
             </div>
         </div>
@@ -91,12 +96,12 @@
 
     $(document).ready(function () {
 
-        addevent();
-        addEventoEditDependencia();
+        addEventoDeleteDependente();
+        addEventoEditDependente();
 
     });
 
-    function addEventoEditDependencia() {
+            function addEventoEditDependente() {
         $(".line-dependente").click(function (button) {
             var id = $(this).attr('identificacao-dependente').trim();
 
@@ -108,7 +113,7 @@
         });
     }
 
-    function addevent()
+    function addEventoDeleteDependente()
     {
         $(".btn-excluir-dependente").confirm({
             title: "Excluir Dependente",
@@ -180,15 +185,15 @@
                if (response.Status == 'Success') {
 
                    $("#data-id-line-dependente-" + response.Obj.IdDependente).remove();
-                   $("#tbody-dependente").append('<tr class="line-dependente" id="data-id-line-dependente-' + response.Obj.IdDependente + '" identificacao-dependente="' + response.Obj.IdDependente + '"><td id="data-id-line-dependente-nome-' + response.Obj.IdDependente + '">' + response.Obj.Nome + '</td><td id="data-id-line-dependente-nrcpf-' + response.Obj.IdDependente + '">' + response.Obj.NrCPF + '</td><td id="data-id-line-dependente-dtnascimento-' + response.Obj.IdDependente + '">' + $("#DtNascDependente").val() + '</td><td id="data-id-line-dependente-parentesco-' + response.Obj.IdDependente + '">' + response.Obj.Parentesco + '</td><td><label class="btn-excluir-documento btn btn-danger" data-id-item="' + response.Obj.IdDependente + '">Deletar</label></td></tr>');
+                   $("#tbody-dependente").append('<tr class="line-dependente" id="data-id-line-dependente-' + response.Obj.IdDependente + '" identificacao-dependente="' + response.Obj.IdDependente + '"><td id="data-id-line-dependente-nome-' + response.Obj.IdDependente + '">' + response.Obj.Nome + '</td><td id="data-id-line-dependente-nrcpf-' + response.Obj.IdDependente + '">' + response.Obj.NrCPF + '</td><td id="data-id-line-dependente-dtnascimento-' + response.Obj.IdDependente + '">' + $("#DtNascDependente").val() + '</td><td id="data-id-line-dependente-parentesco-' + response.Obj.IdDependente + '">' + response.Obj.Parentesco + '</td><td><label class="btn-excluir-dependente btn btn-danger" data-id-item="' + response.Obj.IdDependente + '">Deletar</label></td></tr>');
 
                    $("#IdDependente").val('');
                    $("#NmDependente").val('');
                    $("#CpfDependente").val('');
                    $("#DtNascDependente").val('');
                    $("#GrauParestescoDependente").val('');
-                   addevent();
-                   addEventoEditDependencia();
+                   addEventoDeleteDependente();
+                   addEventoEditDependente();
                    showNotification(response.Title, response.Message, 'success');
                 }
                 else if (response.Status == 'Warning') {

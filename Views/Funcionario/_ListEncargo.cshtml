@@ -1,0 +1,254 @@
+﻿@model IEnumerable<CORE.BackOffice.UI.ViewModels.Funcionario.EncargoViewModel>
+
+@{
+    ViewBag.Title = "Administração - Gestão";
+    Layout = null;
+}
+
+<div class="form-horizontal">
+    <div class="form-group">
+        <div class="col-sm-3 col-md-3">
+            <input id="IdEncargo" type="text" disabled class="form-control" />
+        </div>
+        <div class="col-sm-4 col-md-4">
+            <input id="NmEncargo" type="text" placeholder="Nome" class="form-control" />
+        </div>
+        <div class="col-sm-2 col-md-2">
+            <input id="ValorEncargo" type="text" placeholder="Valor" class="form-control fieldDecimal" />
+        </div>
+        @*<div class="col-sm-2 col-md-2">
+            <input id="TipoMovimentacaoEncargo" type="text" placeholder="Tipo Movimentação" class="form-control" />
+        </div>*@
+
+        <div class="col-sm-2 col-md-2">
+            <select class="form-control" data-val="true" id="TipoMovimentacaoEncargo" name="TipoMovimentacaoEncargo">
+                <option value="-1">Selecione</option>
+                <option value="Crédito">Credito</option>
+                <option selected="selected" value="Debto">Debto</option>
+            </select>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-12 col-md-12">
+            <input type="button" style="width: 100px!important; float: left;" value="Salvar" class="btn btn-success" onclick="IncluirEncargo();" />
+        </div>
+    </div>
+</div>
+<div class="panel panel-visible" id="spy6">
+    <div class="panel-body pn">
+        <table width="100%" class="table .table-striped" id="datatable8" cellspacing="0">
+            <thead>
+                <tr class="success">
+                    <th>
+                        @Html.DisplayNameFor(model => model.FirstOrDefault().Nome)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.FirstOrDefault().Valor)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.FirstOrDefault().TipoMovimentacao)
+                    </th>
+                    @*<th></th>*@
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody id="tbody-encargo">
+                @foreach (var item in Model)
+                {
+                    <tr class="line-encargo" id="data-id-line-encargo-@item.IdEncargo" identificacao-encargo="@item.IdEncargo">
+                        <td id="data-id-line-encargo-nome-@item.IdEncargo">
+                            @item.Nome
+                        </td>
+                        <td id="data-id-line-encargo-valor-@item.IdEncargo">
+                            @item.Valor
+                        </td>
+                        <td id="data-id-line-encargo-tipomovimentacao-@item.IdEncargo">
+                            @item.TipoMovimentacao
+                            @*@{
+            if (item.TipoMovimentacao == 1)
+            {
+                @("Crédito");
+            }
+            else
+            {
+                @("Debto");
+            }
+        }*@
+                        </td>
+                        <td>
+                            <label class="btn-excluir-encargo btn btn-danger" data-id-item="@item.IdEncargo">Deletar</label>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+    </div>
+</div>
+
+<style>
+    .line-encargo:hover {
+        background-color: #70ca63;
+        color: white;
+    }
+</style>
+
+<script src="~/Scripts/jquery.confirm-2.6.1/jquery.confirm.js"></script>
+<script>
+
+
+    $(document).ready(function () {
+
+        addEventDeleteEncargo();
+        addEventoEditEncargo();
+
+        $('.fieldDecimal').maskMoney();
+
+    });
+
+    function addEventoEditEncargo() {
+        $(".line-encargo").click(function (button) {
+            var id = $(this).attr('identificacao-encargo').trim();
+
+            $('#IdEncargo').val(id);
+            $('#NmEncargo').val($('#data-id-line-encargo-nome-' + id).text().trim());
+            $('#ValorEncargo').val($('#data-id-line-encargo-valor-' + id).text().trim());
+            $('#TipoMovimentacaoEncargo').val($('#data-id-line-encargo-tipomovimentacao-' + id).text().trim());
+        });
+    }
+
+    function addEventDeleteEncargo()
+    {
+        $(".btn-excluir-encargo").confirm({
+            title: "Excluir Encargo",
+            text: "Você deseja excluir este Encargo?",
+            confirm: function (button) {
+
+                ExcluirEncargo($(button).attr('data-id-item'));
+
+            },
+            cancel: function (button) {
+
+            },
+            confirmButton: "Sim",
+            cancelButton: "Não"
+        });
+    }
+
+    function EncargoEhValido() {
+
+        //if ($.trim($("#NmEncargo").val()) === '') {
+        //    showNotification('Encargo', "O Nome do Encargo é obrigatório", 'warning')
+        //    return;
+        //}
+
+        //if ($.trim($("#CpfEncargo").val()) != '' && !CPFValido($.trim($("#CpfEncargo").val()))) {
+        //    showNotification('Encargo', "O CPF do Encargo é inválido", 'warning')
+        //    return;
+        //}
+
+        ////console.log(moment($.trim($("#DtNascEncargo").val()), "DD/MM/YYYY", true).isValid());
+
+        //if (!moment($.trim($("#DtNascEncargo").val()), "DD/MM/YYYY", true).isValid()) {
+        //    showNotification('Encargo', "Informe a Data de Nascimento do Encargo", 'warning')
+        //    return;
+        //}
+
+        //if ($.trim($("#GrauParestescoEncargo").val()) === '') {
+        //    showNotification('Encargo', "Informe o Grau de Parentesco", 'warning')
+        //    return;
+        //}
+
+        return true;
+    }
+
+    function IncluirEncargo() {
+
+        if (!EncargoEhValido()) return;
+
+        var dataObject = JSON.stringify({
+            'IdEncargo': $("#IdEncargo").val(),
+            'IdFuncionario': $("#IdFuncionario").val(),
+            'Nome': $("#NmEncargo").val(),
+            'Valor': $("#ValorEncargo").val(),
+            'TipoMovimentacao': $("#TipoMovimentacaoEncargo").val()
+        });
+
+
+        $.ajax({
+            url: '@Url.Action("IncluirEncargo")',
+            type: 'POST',
+            contentType: 'application/json',
+            data: dataObject,
+            success: function (response) {
+
+               if (response.Status == 'Success') {
+
+                   $("#data-id-line-encargo-" + response.Obj.IdEncargo).remove();
+                   $("#tbody-encargo").append('<tr class="line-encargo" id="data-id-line-encargo-' + response.Obj.IdEncargo + '" identificacao-encargo="' + response.Obj.IdEncargo + '"><td id="data-id-line-encargo-nome-' + response.Obj.IdEncargo + '">' + response.Obj.Nome + '</td><td id="data-id-line-encargo-valor-' + response.Obj.IdEncargo + '">' + response.Obj.Valor + '</td><td id="data-id-line-encargo-tipomovimentacao-' + response.Obj.IdEncargo + '">' + response.Obj.TipoMovimentacao  + '</td><td><label class="btn-excluir-encargo btn btn-danger" data-id-item="' + response.Obj.IdEncargo + '">Deletar</label></td></tr>');
+
+                   $("#IdEncargo").val('');
+                   $("#NmEncargo").val('');
+                   $("#ValorEncargo").val('');
+                   $("#TipoMovimentacaoEncargo").val('-1');
+                   addEventDeleteEncargo();
+                   addEventoEditEncargo();
+                   showNotification(response.Title, response.Message, 'success');
+                }
+                else if (response.Status == 'Warning') {
+                    showNotification(response.Title, response.Message, 'warning');
+                }
+                else if (response.Status == 'Error') {
+                    showNotification(response.Title, response.Message, 'danger');
+                }
+                else {
+                    alert("Status de retorno não tratado!");
+                }
+
+            },
+            error: function (data) {
+                alert("Error Submit");
+            }
+        });
+
+    }
+
+    function ExcluirEncargo(id) {
+
+        var dataObject = JSON.stringify({'ID': id});
+
+        $.ajax({
+            url: '@Url.Action("DeleteEncargo")',
+            type: 'POST',
+            contentType: 'application/json',
+            data: dataObject,
+            success: function (response) {
+
+                if (response.Status == 'Success') {
+                    $("#data-id-line-encargo-" + id).remove();
+                    $("#IdEncargo").val('');
+                    $("#NmEncargo").val('');
+                    $('#ValorEncargo').val('');
+                    $('#TipoMovimentacaoEncargo').val('-1');
+
+                    showNotification(response.Title, response.Message, 'success');
+                }
+                else if (response.Status == 'Warning') {
+                    showNotification(response.Title, response.Message, 'warning');
+                }
+                else if (response.Status == 'Error') {
+                    showNotification(response.Title, response.Message, 'danger');
+                }
+                else {
+                    alert("Status de retorno não tratado!");
+                }
+
+            },
+            error: function (data) {
+                alert("Error Submit");
+            }
+        });
+
+    }
+
+</script>

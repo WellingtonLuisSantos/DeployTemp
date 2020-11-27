@@ -38,7 +38,7 @@
                                   <tbody>
                                       @foreach (var item in Model)
                                       {
-                                      <tr class="data-id-line-user-@item.IdFuncionario">
+                                      <tr class="data-id-line-funcionario-@item.IdFuncionario">
                                           <td>
                                               @if (ViewBag.btnEdit == true)
                                               {
@@ -64,7 +64,7 @@
                                           <td>
                                               @if (ViewBag.btnDelete == true)
                                               {
-                                                  <label class="btn-excluir btn btn-danger" data-id-item="@item.IdFuncionario">Deletar</label>
+                                                  <label class="btn-excluir-funcionario btn btn-danger" data-id-item="@item.IdFuncionario">Deletar</label>
                                               }
                                           </td>
                                       </tr>
@@ -98,7 +98,7 @@
             ShowViewDetail($(this).attr('data-item'));
         });
 
-        $(".btn-excluir").confirm({
+        $(".btn-excluir-funcionario").confirm({
             title: "Excluir Funcionário",
             text: "Você deseja excluir este funcionário?",
             confirm: function (button) {
@@ -127,7 +127,7 @@
             success: function (response) {
 
                 if (response.Status == 'Success') {
-                    $(".data-id-line-user-" + id).remove();
+                    $(".data-id-line-funcionario-" + id).remove();
                     showNotification(response.Title, response.Message, 'success');
                 }
                 else if (response.Status == 'Warning') {
